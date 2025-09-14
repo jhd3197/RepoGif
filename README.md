@@ -10,6 +10,14 @@ Perfect for social sharing, repo previews, documentation, or just for fun.
 - 🎨 Web-based animation with HTML/CSS/JS for high-quality visuals
 - ⚙️ Customizable repository name, star count, and fork count
 - 🔍 High-fidelity captures using Puppeteer
+<br><br>
+
+> [!TIP]
+> Starring this repo helps more developers discover RepoGif 🎥
+>
+> ![repo_header_with_forks](https://github.com/user-attachments/assets/ce7e01c0-8562-41c9-be69-45bc7e5d5a76)
+> 
+<br>
 
 ## Install
 
