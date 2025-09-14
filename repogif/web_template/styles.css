@@ -22,7 +22,7 @@ body {
 
 .github-container {
     width: 100%;
-    max-width: 1000px;
+    max-width: 1050px;
 }
 
 /* Repository Header with Gradient Background */
@@ -30,7 +30,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 16px;
+    padding: 18px;
     border-radius: 6px;
     position: relative;
     overflow: hidden;
@@ -141,7 +141,7 @@ body {
     display: inline-block;
     overflow: visible !important;
     vertical-align: text-bottom;
-    fill: currentColor;
+    fill: #24292f;
 }
 
 /* Cursor Animation */
@@ -163,14 +163,15 @@ body {
     position: relative;
     width: 24px;
     height: 24px;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="0,0 16,8 8,16 0,0" fill="white" /></svg>');
+    background-image: url('pointer.png');
     background-size: contain;
     background-repeat: no-repeat;
-    transform-origin: top left;
+    background-position: center;
+    transform-origin: center;
     cursor: pointer;
 }
 
 .cursor.clicking .cursor-dot {
-    transform: scale(0.8);
-    transition: transform 0.1s;
+    transform: scale(0.9);
+    transition: transform 0.1s ease-out;
 }

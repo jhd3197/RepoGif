@@ -42,13 +42,18 @@ const argv = yargs(hideBin(process.argv))
   .option('frames', {
     description: 'Number of frames to capture',
     type: 'number',
-    default: 20
+    default: 46  // Truncate at frame_045 (46 frames total including frame_000)
   })
   .option('interval', {
     alias: 'i',
     description: 'Interval between frames (ms)',
     type: 'number',
-    default: 100
+    default: 60
+  })
+  .option('show-forks', {
+    description: 'Whether to display the fork section',
+    type: 'boolean',
+    default: true
   })
   .help()
   .alias('help', 'h')
@@ -90,8 +95,8 @@ async function captureAnimation() {
     
     // Set viewport size
     await page.setViewport({
-      width: 1200,
-      height: 450,
+      width: 1100,
+      height: 140,
       deviceScaleFactor: 1,
     });
 
@@ -103,7 +108,7 @@ async function captureAnimation() {
     await page.goto(htmlUrl, { waitUntil: 'networkidle0' });
     
     // Customize the repository display based on CLI arguments
-    await page.evaluate((repoName, stars, forks) => {
+    await page.evaluate((repoName, stars, forks, showForks) => {
       // Update repository name
       document.querySelector('.repo-name').textContent = repoName;
       
@@ -113,30 +118,70 @@ async function captureAnimation() {
       // Update fork count
       document.querySelector('.fork-button .count').textContent = forks;
       
-      // Reset animation state
-      const starButton = document.getElementById('star-button');
-      starButton.classList.add('starred');
-      starButton.querySelector('.star-label').textContent = 'Starred';
+      // Show/hide fork section based on showForks parameter
+      if (!showForks) {
+        document.querySelector('.fork-button').style.display = 'none';
+      }
       
-    }, argv.repo, argv.stars, argv.forks);
+      // Set initial animation state to unstarred
+      const starButton = document.getElementById('star-button');
+      starButton.classList.remove('starred');
+      starButton.querySelector('.star-label').textContent = 'Star';
+      
+    }, argv.repo, argv.stars, argv.forks, argv['show-forks']);
 
-    // Wait for animation to be ready
-    await page.waitForSelector('#cursor', { visible: true });
+    // Wait for animation elements to be ready
+    await page.waitForSelector('#cursor', { visible: false });
+    
+    // Pause animation auto-start and ensure unstarred state
+    await page.evaluate(() => {
+      // Prevent animation from auto-starting by overriding the initialDelay
+      // We'll start it manually after capture setup is complete
+      window.originalStartAnimation = window.startAnimation;
+      window.startAnimation = () => {
+        console.log('Animation start prevented - will start manually');
+      };
+      
+      // Ensure star button is in unstarred state
+      const starButton = document.getElementById('star-button');
+      starButton.classList.remove('starred');
+      starButton.querySelector('.star-label').textContent = 'Star';
+    });
+    
+    // Add a small delay to ensure the page is fully rendered
+    await new Promise(resolve => setTimeout(resolve, 500));
     
     // Capture pre-animation screenshot
     await page.screenshot({
-      path: path.join(argv.output, `frame_000_initial.png`),
+      path: path.join(argv.output, `frame_000.png`),
       fullPage: false
     });
     console.log('Captured initial state');
+    
+    // Now manually start the animation with controlled timing
+    await page.evaluate(() => {
+      // Restore the original startAnimation function
+      if (window.originalStartAnimation) {
+        window.startAnimation = window.originalStartAnimation;
+      }
+      
+      // Start with minimal delay
+      const animationSettings = document.animationSettings || {};
+      animationSettings.initialDelay = 100; // Override the 55000ms delay
+      
+      // Start the animation
+      startAnimation();
+    });
 
     // Phase 1: Capture cursor moving to star button
     console.log('Capturing cursor movement...');
-    for (let i = 1; i <= Math.floor(argv.frames / 2); i++) {
+    // Allocate 60% of frames for cursor movement to star button for smoother motion
+    const movementFrames = Math.floor(argv.frames * 0.6);
+    for (let i = 1; i <= movementFrames; i++) {
       // Using setTimeout wrapped in a promise instead of waitForTimeout
       await new Promise(resolve => setTimeout(resolve, argv.interval));
       await page.screenshot({
-        path: path.join(argv.output, `frame_${padNumber(i, 3)}_moving.png`),
+        path: path.join(argv.output, `frame_${padNumber(i, 3)}.png`),
         fullPage: false
       });
     }
@@ -151,50 +196,129 @@ async function captureAnimation() {
       // Check if cursor is near the star button
       return Math.abs(cursorRect.left + cursorRect.width/2 - (buttonRect.left + buttonRect.width/2)) < 10 &&
              Math.abs(cursorRect.top + cursorRect.height/2 - (buttonRect.top + buttonRect.height/2)) < 10;
-    }, { timeout: 5000 }).catch(() => {
+    }, { timeout: 8000 }).catch(() => {
       console.log('Timeout waiting for cursor to reach button - continuing anyway');
     });
     
     // Capture hover state
     await page.screenshot({
-      path: path.join(argv.output, `frame_${padNumber(Math.floor(argv.frames / 2) + 1, 3)}_hover.png`),
+      path: path.join(argv.output, `frame_${padNumber(movementFrames + 1, 3)}.png`),
       fullPage: false
     });
     console.log('Captured hover state');
     
+    // Add pre-click anticipation (slight pause before clicking)
+    await new Promise(resolve => setTimeout(resolve, 300));
+    
+    // Capture pre-click state
+    await page.screenshot({
+      path: path.join(argv.output, `frame_${padNumber(movementFrames + 2, 3)}.png`),
+      fullPage: false
+    });
+    
+    // Verify the button is initially in the unstarred state before clicking
+    const initialStarState = await page.evaluate(() => {
+      const starButton = document.getElementById('star-button');
+      return {
+        hasStarredClass: starButton.classList.contains('starred'),
+        labelText: starButton.querySelector('.star-label').textContent
+      };
+    });
+    console.log(`Initial star button state: ${JSON.stringify(initialStarState)}`);
+    
     // Wait for click animation
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    // Trigger the click event explicitly to ensure it happens
+    await page.evaluate(() => {
+      const starButton = document.getElementById('star-button');
+      const cursor = document.getElementById('cursor');
+      
+      // Trigger click event programmatically
+      const clickEvent = new MouseEvent('click', {
+        bubbles: true,
+        cancelable: true,
+        view: window
+      });
+      starButton.dispatchEvent(clickEvent);
+      
+      // Implement simulateClick functionality directly
+      // (Based on the simulateClick function from animation.js)
+      cursor.classList.add('clicking');
+      starButton.classList.add('starred');
+      starButton.querySelector('.star-label').textContent = 'Starred';
+      
+      // Remove clicking class after animation
+      setTimeout(() => {
+        cursor.classList.remove('clicking');
+      }, 200);
+    });
     
     // Capture the click moment
     await page.screenshot({
-      path: path.join(argv.output, `frame_${padNumber(Math.floor(argv.frames / 2) + 2, 3)}_click.png`),
+      path: path.join(argv.output, `frame_${padNumber(movementFrames + 3, 3)}.png`),
       fullPage: false
     });
     console.log('Captured click moment');
     
-    // Wait for post-click state
-    await new Promise(resolve => setTimeout(resolve, 200));
-    
-    // Capture after click (unstarred state)
-    await page.screenshot({
-      path: path.join(argv.output, `frame_${padNumber(Math.floor(argv.frames / 2) + 3, 3)}_after_click.png`),
-      fullPage: false
-    });
-    console.log('Captured after-click state');
-    
-    // Phase 3: Capture cursor moving away
-    console.log('Capturing cursor exit...');
-    const remainingFrames = argv.frames - Math.floor(argv.frames / 2) - 3;
-    for (let i = 1; i <= remainingFrames; i++) {
-      await new Promise(resolve => setTimeout(resolve, argv.interval));
+    // Capture click transition frames (4 frames for smoother click animation)
+    for (let i = 1; i <= 4; i++) {
+      await new Promise(resolve => setTimeout(resolve, 80));
       await page.screenshot({
-        path: path.join(argv.output, `frame_${padNumber(Math.floor(argv.frames / 2) + 3 + i, 3)}_exit.png`),
+        path: path.join(argv.output, `frame_${padNumber(movementFrames + 3 + i, 3)}.png`),
         fullPage: false
       });
     }
     
+    // Wait a moment for star button transition to complete
+    await new Promise(resolve => setTimeout(resolve, 120));
+    
+    // Capture after click (starred state)
+    await page.screenshot({
+      path: path.join(argv.output, `frame_${padNumber(movementFrames + 8, 3)}.png`),
+      fullPage: false
+    });
+    console.log('Captured starred state');
+    
+    // Verify the button is in the starred state
+    const isStarred = await page.evaluate(() => {
+      const starButton = document.getElementById('star-button');
+      return {
+        hasStarredClass: starButton.classList.contains('starred'),
+        labelText: starButton.querySelector('.star-label').textContent
+      };
+    });
+    
+    console.log(`Star button state: ${JSON.stringify(isStarred)}`);
+    if (!isStarred.hasStarredClass || isStarred.labelText !== 'Starred') {
+      console.warn('Warning: Star button may not be in the correct starred state!');
+    }
+    
+    // Phase 3: Capture cursor moving away
+    console.log('Capturing cursor exit...');
+    // Calculate remaining frames for exit animation
+    const interactionFrames = 9; // hover + pre-click + click + 4 transition frames + after-click
+    const exitFrames = Math.max(1, argv.frames - movementFrames - interactionFrames);
+    
+    console.log(`Total frames: ${argv.frames}, Movement frames: ${movementFrames}, Interaction frames: ${interactionFrames}, Exit frames: ${exitFrames}`);
+    
+    // Brief pause before cursor starts moving away
+    await new Promise(resolve => setTimeout(resolve, 150));
+    
+    // Ensure we don't exceed frame_045 by checking total frame count before each capture
+    for (let i = 1; i <= exitFrames && (movementFrames + interactionFrames + i) <= 45; i++) {
+      await new Promise(resolve => setTimeout(resolve, argv.interval));
+      await page.screenshot({
+        path: path.join(argv.output, `frame_${padNumber(movementFrames + interactionFrames + i, 3)}.png`),
+        fullPage: false
+      });
+    }
+    
+    // Calculate actual total frames captured
+    const totalFramesCaptured = Math.min(movementFrames + interactionFrames + exitFrames, 46) + 1;
+    
     console.log('Animation capture complete!');
-    console.log(`Saved ${argv.frames + 1} frames to ${argv.output}`);
+    console.log(`Saved ${totalFramesCaptured} frames to ${argv.output} (frame_000 to frame_${padNumber(totalFramesCaptured - 1, 3)})`);
     
   } catch (error) {
     console.error('Error during animation capture:', error);

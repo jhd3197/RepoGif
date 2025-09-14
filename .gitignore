@@ -20,3 +20,4 @@ env/
 .idea/
 .vscode/
 /node_modules
+/repogif/debug_frames

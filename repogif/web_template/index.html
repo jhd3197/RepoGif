@@ -41,6 +41,24 @@
         <div class="cursor-dot"></div>
     </div>
 
+    <script>
+        // Function to parse URL parameters
+        function getUrlParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+        
+        // Check if show_forks parameter exists and is set to false
+        document.addEventListener('DOMContentLoaded', function() {
+            const showForks = getUrlParam('show_forks');
+            if (showForks === 'false') {
+                const forkButton = document.querySelector('.fork-button');
+                if (forkButton) {
+                    forkButton.style.display = 'none';
+                }
+            }
+        });
+    </script>
     <script src="animation.js"></script>
 </body>
 </html>
