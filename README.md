@@ -25,22 +25,16 @@ Perfect for social sharing, repo previews, documentation, or just for fun.
 git clone https://github.com/yourname/RepoGif.git
 cd RepoGif
 pip install -e .
-npm install # For Node.js dependencies
+playwright install
 ```
 
 ### Dependencies
 
-#### Python
 - Pillow - Image processing
 - imageio - GIF creation
 - imageio-ffmpeg - Video encoding support
 - numpy - Numerical operations
-- nodejs - Node.js integration
-- pyppeteer - Browser automation (alternative to Puppeteer)
-
-#### Node.js
-- puppeteer - Headless browser automation
-- yargs - Command line argument parsing
+- playwright - Browser automation
 
 ## Usage
 
@@ -73,50 +67,26 @@ generate_repo_gif(
 
 RepoGif uses a multi-step process to create high-quality animations:
 
-1. Generates a web-based animation using HTML, CSS, and JavaScript
-2. Uses Puppeteer to capture frames from the animation
-3. Compiles the frames into a smooth GIF with imageio
+1. Uses static HTML templates with customizable parameters via URL query strings
+2. Uses Playwright to capture two frames (unstarred and starred states)
+3. Creates final GIF using PIL with 1-second duration per frame
 
-The web-based approach allows for more visually appealing animations with:
-- Gradient backgrounds that shift colors
+The template-based approach allows for visually appealing animations with:
+- Gradient backgrounds
 - Proper GitHub styling and iconography
-- Realistic cursor movement and click animations
+- Realistic cursor positioning
 - Star button interactions with visual feedback
 
 ## Customization
 
-You can modify the web template files in `repogif/web_template/` to:
-- Adjust animation timing and speed
-- Change colors and styling
-- Modify cursor behavior
-- Add additional UI elements
-
-## Troubleshooting
-
-### Common Issues
-
-#### Missing Node.js
-If you see an error about Node.js not being installed:
-```
-RuntimeError: Node.js is not installed or not in PATH
-```
-Make sure Node.js is installed and accessible from your command line.
-
-#### Missing Puppeteer
-If you encounter errors with Puppeteer:
-```
-RuntimeError: Puppeteer is not installed
-```
-Run `npm install puppeteer yargs` in the project directory.
-
-#### Blank or Corrupted GIF
-This could be due to:
-- Frame capture issues - Check for browser compatibility
-- Puppeteer configuration - Try running with different arguments
-- File path problems - Ensure all paths are correct
-
-## Example Output
-When run, this package generates an animated GIF showing a GitHub repository with stars and forks, along with a realistic cursor animation.
+The templates are located in `repogif/templates/`, with each template in its own directory:
+- Each template has its own template.html file and necessary assets
+- Templates can be customized via URL parameters:
+  - Repository name
+  - Star count
+  - Fork count
+  - Display dimensions
+- You can also create new templates following the existing structure
 
 ---
 
@@ -127,3 +97,83 @@ python examples/example.py
 ```
 
 and you'll get a RepoGif output in the examples/ folder 🎥.
+
+## Templates
+
+RepoGif offers a variety of templates to showcase your repository in different styles and formats. Choose the one that best suits your needs.
+
+### Template 1 - Simple Star Animation
+
+A simple 2-frame GIF showing star button animation with authentic GitHub styling.
+
+![Template 1](path/to/template1.gif)
+
+**Default Dimensions**: Variable based on content
+
+**Variants**:
+- ![Template 1 without fork button](path/to/template1-nofork.gif)
+- ![Template 1 with 100 stars](path/to/template1-100stars.gif)
+- ![Template 1 with 1k stars](path/to/template1-1kstars.gif)
+
+### Template 2 - Square Badge
+
+A square badge displaying repository statistics with clean, modern design.
+
+![Template 2](path/to/template2.gif)
+
+**Default Dimensions**: 250x250 pixels
+
+### Template 3 - Horizontal Banner
+
+A wide banner perfect for repository headers or documentation pages.
+
+![Template 3](path/to/template3.gif)
+
+**Default Dimensions**: 600x120 pixels
+
+### Template 4 - Circular Badge
+
+A circular badge with focused repository statistics in a compact form.
+
+![Template 4](path/to/template4.gif)
+
+**Default Dimensions**: 250x250 pixels
+
+### Template 5 - Vertical Card
+
+A vertical card layout with gradient background for an elegant presentation.
+
+![Template 5](path/to/template5.gif)
+
+**Default Dimensions**: 300x400 pixels
+
+### Template 6 - Minimalist Tile
+
+A clean, monochrome design focusing on essential repository information.
+
+![Template 6](path/to/template6.gif)
+
+**Default Dimensions**: 320x200 pixels
+
+### Template 7 - Animated Badge
+
+An eye-catching badge with pulsing star effect animation.
+
+![Template 7](path/to/template7.gif)
+
+**Default Dimensions**: 280x280 pixels
+
+
+## Troubleshooting
+
+### Common Issues
+
+
+#### Blank or Corrupted GIF
+This could be due to:
+- Frame capture issues - Check for browser compatibility
+- Puppeteer configuration - Try running with different arguments
+- File path problems - Ensure all paths are correct
+
+## Example Output
+When run, this package generates an animated GIF showing a GitHub repository with stars and forks, along with a realistic cursor animation.

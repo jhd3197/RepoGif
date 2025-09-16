@@ -1,0 +1,3 @@
+"""
+Templates package for RepoGif
+"""

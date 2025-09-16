@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RepoGif - Minimalist Tile</title>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+        }
+
+        body {
+            width: var(--gif-width, 320px);
+            height: var(--gif-height, 200px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: transparent;
+            color: #333333;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Minimalist Tile Container */
+        .minimalist-tile {
+            width: 95%;
+            height: 90%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-start;
+            background: #ffffff;
+            border-radius: 4px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+            position: relative;
+        }
+
+        /* Header with Repository Name */
+        .repo-header {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            width: 100%;
+        }
+
+        .repo-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: #212121;
+            margin-bottom: 4px;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .visibility-label {
+            font-size: 12px;
+            font-weight: 400;
+            color: #757575;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Stats Container */
+        .stats-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        /* Star Section */
+        .star-section {
+            display: flex;
+            align-items: center;
+        }
+
+        .star-icon {
+            fill: #212121;
+            width: 22px;
+            height: 22px;
+            margin-right: 8px;
+            transition: fill 0.3s ease;
+        }
+
+        .star-count {
+            font-size: 22px;
+            font-weight: 700;
+            color: #212121;
+        }
+
+        /* Fork Section */
+        .fork-section {
+            display: flex;
+            align-items: center;
+        }
+
+        .fork-icon {
+            fill: #757575;
+            width: 18px;
+            height: 18px;
+            margin-right: 6px;
+        }
+
+        .fork-count {
+            font-size: 16px;
+            font-weight: 500;
+            color: #757575;
+        }
+
+        /* Border accent */
+        .border-accent {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: #212121;
+        }
+
+        /* Handle starred state */
+        .star-section.starred .star-icon {
+            fill: #212121;
+        }
+
+        .star-section:not(.starred) .star-icon {
+            fill: #bdbdbd;
+        }
+
+        /* Minimalist decorative element */
+        .minimalist-element {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #212121;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="minimalist-tile">
+        <!-- Border accent -->
+        <div class="border-accent"></div>
+        
+        <!-- Minimalist decorative element -->
+        <div class="minimalist-element"></div>
+        
+        <!-- Repository header -->
+        <div class="repo-header">
+            <div class="repo-name">RepoGif</div>
+            <span class="visibility-label">Public</span>
+        </div>
+        
+        <!-- Stats container -->
+        <div class="stats-container">
+            <!-- Star Section -->
+            <div class="star-section">
+                <svg class="star-icon" viewBox="0 0 16 16" version="1.1" aria-hidden="true">
+                    <path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"></path>
+                </svg>
+                <div class="star-count">5.8k</div>
+            </div>
+            
+            <!-- Fork Section -->
+            <div class="fork-section">
+                <svg class="fork-icon" viewBox="0 0 16 16" version="1.1" aria-hidden="true">
+                    <path d="M5 5.372v.878c0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75v-.878a2.25 2.25 0 1 1 1.5 0v.878a2.25 2.25 0 0 1-2.25 2.25h-1.5v2.128a2.251 2.251 0 1 1-1.5 0V8.5h-1.5A2.25 2.25 0 0 1 3.5 6.25v-.878a2.25 2.25 0 1 1 1.5 0ZM5 3.25a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Zm6.75.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm-3 8.75a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Z"></path>
+                </svg>
+                <span class="fork-count">397</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to parse URL parameters
+        function getUrlParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+        
+        // Configure the tile display based on URL parameters
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set repository name from URL parameter
+            const repoName = getUrlParam('repo_name');
+            if (repoName) {
+                document.querySelector('.repo-name').textContent = repoName;
+            }
+            
+            // Set star count from URL parameter
+            const stars = getUrlParam('stars');
+            if (stars) {
+                document.querySelector('.star-count').textContent = stars;
+            }
+            
+            // Set fork count from URL parameter
+            const forks = getUrlParam('forks');
+            if (forks) {
+                document.querySelector('.fork-count').textContent = forks;
+            }
+            
+            // Set starred state from URL parameter
+            const isStarred = getUrlParam('starred');
+            const starSection = document.querySelector('.star-section');
+            if (isStarred === 'true') {
+                starSection.classList.add('starred');
+            } else if (isStarred === 'false') {
+                starSection.classList.remove('starred');
+            }
+            
+            // Show/hide fork section based on URL parameter
+            const showForks = getUrlParam('show_forks');
+            if (showForks === 'false') {
+                const forkSection = document.querySelector('.fork-section');
+                if (forkSection) {
+                    forkSection.style.display = 'none';
+                }
+            }
+            
+            // Set custom width and height from URL parameters
+            const width = getUrlParam('width') || 320;
+            const height = getUrlParam('height') || 200;
+            
+            // Apply custom dimensions as CSS variables
+            document.documentElement.style.setProperty('--gif-width', `${width}px`);
+            document.documentElement.style.setProperty('--gif-height', `${height}px`);
+        });
+    </script>
+</body>
+</html>

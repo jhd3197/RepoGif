@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RepoGif - Animated Badge with Pulsing Star</title>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+        }
+
+        body {
+            width: var(--gif-width, 280px);
+            height: var(--gif-height, 280px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: transparent;
+            color: #ffffff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Badge Container */
+        .animated-badge {
+            width: 90%;
+            height: 90%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: #1a1a2e;
+            border-radius: 50%;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Inner content container */
+        .badge-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Repository Name */
+        .repo-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 12px;
+            max-width: 180px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Star Section */
+        .star-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 10px 0;
+            position: relative;
+        }
+
+        /* Animated Star Icon */
+        .star-icon {
+            fill: #ffd700; /* Gold color for star */
+            width: 60px;
+            height: 60px;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 2;
+            filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.8));
+            /* Pulsing animation */
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.8));
+            }
+            50% {
+                transform: scale(1.15);
+                filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.9));
+            }
+            100% {
+                transform: scale(1);
+                filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.8));
+            }
+        }
+
+        /* Star glow effect */
+        .star-glow {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,215,0,0.4) 0%, rgba(255,215,0,0) 70%);
+            animation: glow 2s infinite ease-in-out;
+            z-index: 1;
+        }
+
+        @keyframes glow {
+            0% {
+                opacity: 0.5;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.8;
+                transform: scale(1.5);
+            }
+            100% {
+                opacity: 0.5;
+                transform: scale(1);
+            }
+        }
+
+        .star-count {
+            font-size: 32px;
+            font-weight: 700;
+            color: #ffffff;
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Fork Section */
+        .fork-section {
+            display: flex;
+            align-items: center;
+            margin-top: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 14px;
+            border-radius: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .fork-icon {
+            fill: #ffffff;
+            width: 16px;
+            height: 16px;
+            margin-right: 6px;
+        }
+
+        .fork-count {
+            font-size: 16px;
+            font-weight: 500;
+            color: #ffffff;
+        }
+
+        /* Animated background elements */
+        .bg-circle {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.15;
+            z-index: 1;
+        }
+
+        .bg-circle-1 {
+            width: 150%;
+            height: 150%;
+            background: radial-gradient(circle, #0a0a15 0%, #1a1a2e 100%);
+            top: -25%;
+            left: -25%;
+        }
+
+        .bg-circle-2 {
+            width: 60%;
+            height: 60%;
+            background: #2a2a42;
+            bottom: -20%;
+            right: -20%;
+            animation: float 8s infinite ease-in-out;
+        }
+
+        .bg-circle-3 {
+            width: 40%;
+            height: 40%;
+            background: #3a3a52;
+            top: -10%;
+            right: 10%;
+            animation: float 6s infinite ease-in-out reverse;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+            }
+            25% {
+                transform: translateY(-10px) translateX(5px);
+            }
+            50% {
+                transform: translateY(0) translateX(10px);
+            }
+            75% {
+                transform: translateY(10px) translateX(5px);
+            }
+        }
+
+        /* Handle starred state */
+        .star-section.starred .star-icon {
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        .star-section:not(.starred) .star-icon {
+            fill: #888888;
+            filter: none;
+            animation: none;
+        }
+
+        .star-section:not(.starred) .star-glow {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-badge">
+        <!-- Animated background elements -->
+        <div class="bg-circle bg-circle-1"></div>
+        <div class="bg-circle bg-circle-2"></div>
+        <div class="bg-circle bg-circle-3"></div>
+        
+        <!-- Badge content -->
+        <div class="badge-content">
+            <!-- Repository Name -->
+            <div class="repo-name">RepoGif</div>
+            
+            <!-- Star Section with pulsing effect -->
+            <div class="star-section">
+                <div class="star-glow"></div>
+                <svg class="star-icon" viewBox="0 0 16 16" version="1.1" aria-hidden="true">
+                    <path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"></path>
+                </svg>
+                <div class="star-count">5.8k</div>
+            </div>
+            
+            <!-- Fork Section -->
+            <div class="fork-section">
+                <svg class="fork-icon" viewBox="0 0 16 16" version="1.1" aria-hidden="true">
+                    <path d="M5 5.372v.878c0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75v-.878a2.25 2.25 0 1 1 1.5 0v.878a2.25 2.25 0 0 1-2.25 2.25h-1.5v2.128a2.251 2.251 0 1 1-1.5 0V8.5h-1.5A2.25 2.25 0 0 1 3.5 6.25v-.878a2.25 2.25 0 1 1 1.5 0ZM5 3.25a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Zm6.75.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm-3 8.75a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Z"></path>
+                </svg>
+                <span class="fork-count">397</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to parse URL parameters
+        function getUrlParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+        
+        // Configure the badge display based on URL parameters
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set repository name from URL parameter
+            const repoName = getUrlParam('repo_name');
+            if (repoName) {
+                document.querySelector('.repo-name').textContent = repoName;
+            }
+            
+            // Set star count from URL parameter
+            const stars = getUrlParam('stars');
+            if (stars) {
+                document.querySelector('.star-count').textContent = stars;
+            }
+            
+            // Set fork count from URL parameter
+            const forks = getUrlParam('forks');
+            if (forks) {
+                document.querySelector('.fork-count').textContent = forks;
+            }
+            
+            // Set starred state from URL parameter
+            const isStarred = getUrlParam('starred');
+            const starSection = document.querySelector('.star-section');
+            if (isStarred === 'true') {
+                starSection.classList.add('starred');
+            } else if (isStarred === 'false') {
+                starSection.classList.remove('starred');
+            }
+            
+            // Show/hide fork section based on URL parameter
+            const showForks = getUrlParam('show_forks');
+            if (showForks === 'false') {
+                const forkSection = document.querySelector('.fork-section');
+                if (forkSection) {
+                    forkSection.style.display = 'none';
+                }
+            }
+            
+            // Set custom width and height from URL parameters
+            const width = getUrlParam('width') || 280;
+            const height = getUrlParam('height') || 280;
+            
+            // Apply custom dimensions as CSS variables
+            document.documentElement.style.setProperty('--gif-width', `${width}px`);
+            document.documentElement.style.setProperty('--gif-height', `${height}px`);
+        });
+    </script>
+</body>
+</html>

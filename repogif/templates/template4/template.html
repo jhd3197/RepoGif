@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RepoGif - Circular Badge</title>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+        }
+
+        body {
+            width: var(--gif-width, 250px);
+            height: var(--gif-height, 250px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: transparent;
+            color: #ffffff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Circular Badge Container */
+        .circle-badge {
+            width: 90%;
+            height: 90%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            background: conic-gradient(from 45deg, #FF5733, #FFC300, #36D399, #3498DB, #9B59B6, #FF5733);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Inner circle with content */
+        .inner-circle {
+            width: 85%;
+            height: 85%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px 10px;
+            text-align: center;
+        }
+
+        /* Repository Name */
+        .repo-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: #ffffff;
+            max-width: 180px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            position: relative;
+            z-index: 2;
+            margin-top: 5px;
+        }
+
+        /* Star Section */
+        .star-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: -10px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .star-icon {
+            fill: #f1e05a; /* Yellow color for star */
+            width: 36px;
+            height: 36px;
+            margin-bottom: 5px;
+            transition: fill 0.3s ease;
+        }
+
+        .star-count {
+            font-size: 32px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-top: -5px;
+        }
+
+        /* Fork Section */
+        .fork-section {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .fork-icon {
+            fill: #ffffff;
+            width: 16px;
+            height: 16px;
+            margin-right: 5px;
+        }
+
+        .fork-count {
+            font-size: 16px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Public label */
+        .visibility-label {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            position: relative;
+            z-index: 2;
+            margin-top: -15px;
+        }
+
+        /* Handle starred state */
+        .star-section.starred .star-icon {
+            filter: drop-shadow(0 0 5px #f1e05a);
+        }
+
+        .star-section:not(.starred) .star-icon {
+            fill: #888888;
+            filter: none;
+        }
+
+        /* Shine effect */
+        .shine {
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            right: -50%;
+            bottom: -50%;
+            background: radial-gradient(
+                circle at center,
+                rgba(255, 255, 255, 0.2) 0%,
+                rgba(255, 255, 255, 0) 70%
+            );
+            opacity: 0.5;
+            z-index: 1;
+        }
+
+        /* Pointer */
+        .pointer {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background-image: url('pointer.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            z-index: 100;
+            right: 105px;
+            bottom: 70px;
+        }
+    </style>
+</head>
+<body>
+    <div class="circle-badge">
+        <div class="inner-circle">
+            <!-- Repository Name -->
+            <div class="repo-name">RepoGif</div>
+            
+            <!-- Star Section -->
+            <div class="star-section">
+                <svg class="star-icon" viewBox="0 0 16 16" version="1.1" aria-hidden="true">
+                    <path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"></path>
+                </svg>
+                <div class="star-count">5.8k</div>
+            </div>
+            
+            <!-- Fork Section -->
+            <div class="fork-section">
+                <svg class="fork-icon" viewBox="0 0 16 16" version="1.1" aria-hidden="true">
+                    <path d="M5 5.372v.878c0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75v-.878a2.25 2.25 0 1 1 1.5 0v.878a2.25 2.25 0 0 1-2.25 2.25h-1.5v2.128a2.251 2.251 0 1 1-1.5 0V8.5h-1.5A2.25 2.25 0 0 1 3.5 6.25v-.878a2.25 2.25 0 1 1 1.5 0ZM5 3.25a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Zm6.75.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm-3 8.75a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Z"></path>
+                </svg>
+                <span class="fork-count">397</span>
+            </div>
+            
+            <!-- Visibility Label -->
+            <span class="visibility-label">Public</span>
+            
+            <!-- Shine effect -->
+            <div class="shine"></div>
+        </div>
+    </div>
+    
+    <!-- Static pointer cursor -->
+    <div class="pointer"></div>
+
+    <script>
+        // Function to parse URL parameters
+        function getUrlParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+        
+        // Configure the badge display based on URL parameters
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set repository name from URL parameter
+            const repoName = getUrlParam('repo_name');
+            if (repoName) {
+                document.querySelector('.repo-name').textContent = repoName;
+            }
+            
+            // Set star count from URL parameter
+            const stars = getUrlParam('stars');
+            if (stars) {
+                document.querySelector('.star-count').textContent = stars;
+            }
+            
+            // Set fork count from URL parameter
+            const forks = getUrlParam('forks');
+            if (forks) {
+                document.querySelector('.fork-count').textContent = forks;
+            }
+            
+            // Set starred state from URL parameter
+            const isStarred = getUrlParam('starred');
+            const starSection = document.querySelector('.star-section');
+            if (isStarred === 'true') {
+                starSection.classList.add('starred');
+            } else if (isStarred === 'false') {
+                starSection.classList.remove('starred');
+            }
+            
+            // Show/hide fork section based on URL parameter
+            const showForks = getUrlParam('show_forks');
+            if (showForks === 'false') {
+                const forkSection = document.querySelector('.fork-section');
+                if (forkSection) {
+                    forkSection.style.display = 'none';
+                }
+            }
+            
+            // Set custom width and height from URL parameters
+            const width = getUrlParam('width') || 250;
+            const height = getUrlParam('height') || 250;
+            
+            // Apply custom dimensions as CSS variables
+            document.documentElement.style.setProperty('--gif-width', `${width}px`);
+            document.documentElement.style.setProperty('--gif-height', `${height}px`);
+        });
+    </script>
+</body>
+</html>

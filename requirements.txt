@@ -2,5 +2,4 @@ Pillow
 imageio
 imageio-ffmpeg
 numpy
-nodejs
-pyppeteer
+playwright
