@@ -6,7 +6,6 @@ Perfect for social sharing, repo previews, documentation, or just for fun.
 ## Features
 
 - 🌈 Gradient backgrounds with authentic GitHub styling
-- 🖱️ Realistic cursor movement and star interaction
 - 🎨 Web-based animation with HTML/CSS/JS for high-quality visuals
 - ⚙️ Customizable repository name, star count, and fork count
 - 🔍 High-fidelity captures using Puppeteer
@@ -15,7 +14,7 @@ Perfect for social sharing, repo previews, documentation, or just for fun.
 > [!TIP]
 > Starring this repo helps more developers discover RepoGif 🎥
 >
-> ![repo_header_with_forks](https://github.com/user-attachments/assets/ce7e01c0-8562-41c9-be69-45bc7e5d5a76)
+> ![template1_1k](https://github.com/user-attachments/assets/bf87874c-e22a-45d3-a5d8-6c30d4de478a)
 > 
 <br>
 
@@ -106,20 +105,20 @@ RepoGif offers a variety of templates to showcase your repository in different s
 
 A simple 2-frame GIF showing star button animation with authentic GitHub styling.
 
-![Template 1](path/to/template1.gif)
+![template1_1k](https://github.com/user-attachments/assets/8481b384-8f3f-432e-bc64-33fccde73c6f)
+
 
 **Default Dimensions**: Variable based on content
 
 **Variants**:
-- ![Template 1 without fork button](path/to/template1-nofork.gif)
-- ![Template 1 with 100 stars](path/to/template1-100stars.gif)
-- ![Template 1 with 1k stars](path/to/template1-1kstars.gif)
+- ![template1_no_forks](https://github.com/user-attachments/assets/ec88df4b-9e02-4d60-a9dd-dc7320bf62ec)
+- ![template1_100stars](https://github.com/user-attachments/assets/dc08e923-31ef-4020-8d85-a550737cac9a)
 
 ### Template 2 - Square Badge
 
 A square badge displaying repository statistics with clean, modern design.
 
-![Template 2](path/to/template2.gif)
+![square_badge_test](https://github.com/user-attachments/assets/f4956ab0-ee3a-47f1-a3b8-8aa15555ee10)
 
 **Default Dimensions**: 250x250 pixels
 
@@ -127,7 +126,7 @@ A square badge displaying repository statistics with clean, modern design.
 
 A wide banner perfect for repository headers or documentation pages.
 
-![Template 3](path/to/template3.gif)
+![horizontal_banner_test](https://github.com/user-attachments/assets/4c2c7d0d-8826-40d5-82be-fa83bfbafc9c)
 
 **Default Dimensions**: 600x120 pixels
 
@@ -135,7 +134,7 @@ A wide banner perfect for repository headers or documentation pages.
 
 A circular badge with focused repository statistics in a compact form.
 
-![Template 4](path/to/template4.gif)
+![circular_badge_test](https://github.com/user-attachments/assets/6910f76f-30ad-4545-957d-4473b688f61a)
 
 **Default Dimensions**: 250x250 pixels
 
@@ -143,7 +142,7 @@ A circular badge with focused repository statistics in a compact form.
 
 A vertical card layout with gradient background for an elegant presentation.
 
-![Template 5](path/to/template5.gif)
+![vertical_card_test](https://github.com/user-attachments/assets/f6830676-8950-4499-ba00-a5e6589ac47b)
 
 **Default Dimensions**: 300x400 pixels
 
@@ -151,7 +150,7 @@ A vertical card layout with gradient background for an elegant presentation.
 
 A clean, monochrome design focusing on essential repository information.
 
-![Template 6](path/to/template6.gif)
+![minimalist_tile_test](https://github.com/user-attachments/assets/0ed364f5-68c1-4b2d-a2ba-bbc6d6fdec1c)
 
 **Default Dimensions**: 320x200 pixels
 
@@ -159,7 +158,7 @@ A clean, monochrome design focusing on essential repository information.
 
 An eye-catching badge with pulsing star effect animation.
 
-![Template 7](path/to/template7.gif)
+![animated_badge_test](https://github.com/user-attachments/assets/faaecbe6-09a3-40f5-9dfa-092a71c9c846)
 
 **Default Dimensions**: 280x280 pixels
 
