@@ -29,7 +29,9 @@ class RepoGifGenerator:
             "template4": "repogif.templates.template4",
             "template5": "repogif.templates.template5",
             "template6": "repogif.templates.template6",
-            "template7": "repogif.templates.template7"
+            "template7": "repogif.templates.template7",
+            "template8": "repogif.templates.template8",
+            "template9": "repogif.templates.template9"
         }
         self.default_template = "template1"
     
@@ -38,15 +40,17 @@ class RepoGifGenerator:
         return list(self.templates.keys())
     
     def generate_gif(self,
-                    repo_name="repogif",
-                    stars=123,
-                    forks=45,
-                    out="repo.gif",
-                    debug_dir=None,
-                    show_forks=True,
-                    template=None,
-                    width=580,
-                    height=140):
+                     repo_name="repogif",
+                     stars=123,
+                     forks=45,
+                     out="repo.gif",
+                     debug_dir=None,
+                     show_forks=True,
+                     template=None,
+                     width=580,
+                     height=140,
+                     contributors=None,
+                     commits=None):
         """
         Generate a GitHub repository header GIF using the specified template.
         
@@ -64,6 +68,10 @@ class RepoGifGenerator:
                                     If None, the default template will be used.
             width (int, optional): Width of the GIF in pixels. Default is 580.
             height (int, optional): Height of the GIF in pixels. Default is 140.
+            contributors (str, optional): JSON-encoded string of contributors data for template9.
+                                       Each contributor should have 'date', 'login', and 'avatar_url'.
+            commits (str, optional): Comma-separated string of weekly commit counts for template8.
+                                  Example: "10,25,15,30,20,35,40"
             
         Returns:
             None: The GIF is saved to the specified path
@@ -121,6 +129,15 @@ class RepoGifGenerator:
                         "width": width,
                         "height": height
                     }
+                    
+                    # Add commits data for template8
+                    if commits and template_name == "template8":
+                        params["commits"] = commits
+                    
+                    # Add contributors data for template9
+                    if contributors and template_name == "template9":
+                        params["contributors"] = contributors
+                        params["animation_state"] = "initial"
                     query_string = "&".join([f"{k}={v}" for k, v in params.items()])
                     page.goto(f"{template_url}?{query_string}")
                     page.screenshot(path=unstarred_path)
@@ -128,6 +145,11 @@ class RepoGifGenerator:
                     # Capture starred state
                     print("Capturing starred state...")
                     params["starred"] = "true"
+                    
+                    # Update animation state for template9
+                    if contributors and template_name == "template9":
+                        params["animation_state"] = "animated"
+                        
                     query_string = "&".join([f"{k}={v}" for k, v in params.items()])
                     page.goto(f"{template_url}?{query_string}")
                     page.screenshot(path=starred_path)
@@ -187,7 +209,7 @@ _generator = RepoGifGenerator()
 # Public API functions
 def generate_repo_gif(repo_name="repogif", stars=123, forks=45, out="repo.gif",
                      debug_dir=None, show_forks=True, template=None,
-                     width=580, height=140):
+                     width=580, height=140, contributors=None, commits=None):
     """
     Generate a GitHub repository header GIF using the specified template.
     
@@ -202,6 +224,10 @@ def generate_repo_gif(repo_name="repogif", stars=123, forks=45, out="repo.gif",
                                 If None, the default template will be used.
         width (int, optional): Width of the GIF in pixels. Default is 580.
         height (int, optional): Height of the GIF in pixels. Default is 140.
+        contributors (str, optional): JSON-encoded string of contributors data for template9.
+                                   Each contributor should have 'date', 'login', and 'avatar_url'.
+        commits (str, optional): Comma-separated string of weekly commit counts for template8.
+                              Example: "10,25,15,30,20,35,40"
         
     Returns:
         None: The GIF is saved to the specified path
@@ -215,7 +241,9 @@ def generate_repo_gif(repo_name="repogif", stars=123, forks=45, out="repo.gif",
         show_forks=show_forks,
         template=template,
         width=width,
-        height=height
+        height=height,
+        contributors=contributors,
+        commits=commits
     )
 
 

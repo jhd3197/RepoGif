@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RepoGif - Template 8</title>
+    <style>
+        /* GitHub Repository Header Styling */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+        }
+
+        body {
+            width: var(--gif-width, 580px);
+            height: var(--gif-height, 140px);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 30px;
+            background: linear-gradient(135deg, #6e40aa, #e43b93, #4d71f2);
+            background-size: 100% 100%;
+            color: #c9d1d9;
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        .github-container {
+            width: 100%;
+            max-width: var(--gif-width, 580px);
+        }
+
+        /* Repository Header with Gradient Background */
+        .repo-header {
+            display: flex;
+            flex-direction: column;
+            padding: 16px;
+            border-radius: 6px;
+            position: relative;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            min-height: 80px;
+            width: 100%;
+            max-width: calc(var(--gif-width, 580px) - 32px); /* Account for padding */
+            margin: 0 auto;
+        }
+
+        /* Repository Info Section */
+        .repo-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .repo-visibility {
+            display: flex;
+            align-items: center;
+        }
+
+        .repo-name {
+            font-size: 20px;
+            font-weight: 600;
+            margin-left: 8px;
+            color: #24292f;
+        }
+
+        .visibility-label {
+            font-size: 12px;
+            color: #57606a;
+            margin-top: 2px;
+            font-weight: 500;
+        }
+
+        /* Repository Actions Section */
+        .repo-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-button {
+            display: flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: 6px;
+            background-color: #f6f8fa;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-size: 14px;
+            font-weight: 500;
+            border: 1px solid #d0d7de;
+            color: #24292f;
+        }
+
+        .action-button:hover {
+            background-color: #eaeef2;
+        }
+
+        .fork-button {
+            color: #24292f;
+        }
+
+        .action-button svg {
+            margin-right: 4px;
+            fill: currentColor;
+        }
+
+        .count {
+            margin-left: 6px;
+            padding-left: 6px;
+            border-left: 1px solid #d0d7de;
+        }
+
+        /* GitHub Icons (Octicons) */
+        .octicon {
+            display: inline-block;
+            overflow: visible !important;
+            vertical-align: text-bottom;
+            fill: #24292f;
+        }
+
+        /* Commits Chart Section */
+        .commits-chart {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        .chart-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #24292f;
+            margin-bottom: 8px;
+        }
+
+        .chart-container {
+            display: flex;
+            align-items: flex-end;
+            height: 30px;
+            gap: 4px;
+            position: relative;
+            width: 100%;
+        }
+
+        .chart-bar {
+            flex: 1;
+            background-color: #0969da;
+            border-radius: 3px 3px 0 0;
+            transition: height 1s ease-in-out;
+            position: relative;
+        }
+
+        .chart-bar:hover {
+            background-color: #2188ff;
+        }
+
+        .chart-bar:hover::after {
+            content: attr(data-count);
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #24292f;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 10px;
+            white-space: nowrap;
+        }
+
+        .chart-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 4px;
+            font-size: 10px;
+            color: #57606a;
+        }
+
+        .chart-baseline {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background-color: #d0d7de;
+        }
+    </style>
+</head>
+<body>
+    <div class="github-container">
+        <div class="repo-header">
+            <div class="repo-info">
+                <div class="repo-visibility">
+                    <svg class="octicon" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">
+                        <path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7.75.75 0 1 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5Zm10.5-1h-8a1 1 0 0 0-1 1v6.708A2.486 2.486 0 0 1 4.5 9h8ZM5 12.25a.25.25 0 0 1 .25-.25h3.5a.25.25 0 0 1 .25.25v3.25a.25.25 0 0 1-.4.2l-1.45-1.087a.249.249 0 0 0-.3 0L5.4 15.7a.25.25 0 0 1-.4-.2Z"></path>
+                    </svg>
+                    <span class="repo-name">RepoGif</span>
+                </div>
+                <div class="repo-actions">
+                    <div class="action-button fork-button">
+                        <svg class="octicon" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">
+                            <path d="M5 5.372v.878c0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75v-.878a2.25 2.25 0 1 1 1.5 0v.878a2.25 2.25 0 0 1-2.25 2.25h-1.5v2.128a2.251 2.251 0 1 1-1.5 0V8.5h-1.5A2.25 2.25 0 0 1 3.5 6.25v-.878a2.25 2.25 0 1 1 1.5 0ZM5 3.25a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Zm6.75.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm-3 8.75a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Z"></path>
+                        </svg>
+                        <span>Fork</span>
+                        <span class="count">397</span>
+                    </div>
+                </div>
+            </div>
+            <div class="commits-chart">
+                <div class="chart-title">Commits per week</div>
+                <div class="chart-container">
+                    <div class="chart-baseline"></div>
+                    <!-- Bars will be dynamically generated here -->
+                </div>
+                <div class="chart-labels">
+                    <span>Week 1</span>
+                    <span>Week 7</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to parse URL parameters
+        function getUrlParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+        
+        // Configure the repository display based on URL parameters
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set repository name from URL parameter
+            const repoName = getUrlParam('repo_name');
+            if (repoName) {
+                document.querySelector('.repo-name').textContent = repoName;
+            }
+            
+            // Set fork count from URL parameter
+            const forks = getUrlParam('forks');
+            if (forks) {
+                document.querySelector('.fork-button .count').textContent = forks;
+            }
+            
+            // Show/hide fork button based on URL parameter
+            const showForks = getUrlParam('show_forks');
+            if (showForks === 'false') {
+                const forkButton = document.querySelector('.fork-button');
+                if (forkButton) {
+                    forkButton.style.display = 'none';
+                }
+            }
+            
+            // Set custom width and height from URL parameters
+            const width = getUrlParam('width') || 580;
+            const height = getUrlParam('height') || 140;
+            
+            // Apply custom dimensions as CSS variables
+            document.documentElement.style.setProperty('--gif-width', `${width}px`);
+            document.documentElement.style.setProperty('--gif-height', `${height}px`);
+            
+            // Parse commits parameter as comma-separated integers
+            const commitsParam = getUrlParam('commits') || '3,5,2,7,0,4,6';
+            const commits = commitsParam.split(',').map(num => parseInt(num.trim(), 10));
+            
+            // Find the maximum commit value to scale the chart
+            const maxCommit = Math.max(...commits);
+            
+            // Generate chart bars
+            const chartContainer = document.querySelector('.chart-container');
+            
+            // Determine if we need to animate (based on the 'starred' parameter)
+            const isStarred = getUrlParam('starred');
+            const shouldAnimate = isStarred === 'true';
+            
+            // Create chart bars
+            commits.forEach((commit, index) => {
+                const bar = document.createElement('div');
+                bar.className = 'chart-bar';
+                bar.setAttribute('data-count', commit);
+                
+                // Set initial height (0 for animation, or actual height if no animation)
+                const heightPercentage = (maxCommit > 0) ? (commit / maxCommit) * 100 : 0;
+                bar.style.height = shouldAnimate ? `${heightPercentage}%` : '0%';
+                
+                chartContainer.appendChild(bar);
+            });
+            
+            // If this is the first frame (unstarred), set all bars to 0 height
+            // If this is the second frame (starred), animate bars to their final height
+            if (!shouldAnimate) {
+                // First frame - all bars at zero height
+                document.querySelectorAll('.chart-bar').forEach(bar => {
+                    bar.style.height = '0%';
+                });
+            } else {
+                // Second frame - animate bars to their final height
+                setTimeout(() => {
+                    document.querySelectorAll('.chart-bar').forEach((bar, index) => {
+                        const commit = commits[index];
+                        const heightPercentage = (maxCommit > 0) ? (commit / maxCommit) * 100 : 0;
+                        bar.style.height = `${heightPercentage}%`;
+                    });
+                }, 50); // Small delay to ensure animation works
+            }
+            
+            // Update chart labels based on the number of weeks
+            if (commits.length > 1) {
+                const chartLabels = document.querySelector('.chart-labels');
+                chartLabels.innerHTML = `<span>Week 1</span><span>Week ${commits.length}</span>`;
+            }
+        });
+    </script>
+</body>
+</html>

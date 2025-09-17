@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RepoGif - Template 9</title>
+    <style>
+        /* GitHub Repository Header Styling */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+        }
+
+        body {
+            width: var(--gif-width, 580px);
+            height: var(--gif-height, 140px);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 30px;
+            background: linear-gradient(135deg, #6e40aa, #e43b93, #4d71f2);
+            background-size: 100% 100%;
+            color: #c9d1d9;
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        .github-container {
+            width: 100%;
+            max-width: var(--gif-width, 580px);
+        }
+
+        /* Repository Header with Gradient Background */
+        .repo-header {
+            display: flex;
+            flex-direction: column;
+            padding: 16px;
+            border-radius: 6px;
+            position: relative;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: calc(var(--gif-width, 580px) - 32px);
+            margin: 0 auto;
+        }
+
+        /* Repository Info Section */
+        .repo-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .repo-visibility {
+            display: flex;
+            align-items: center;
+        }
+
+        .repo-name {
+            font-size: 20px;
+            font-weight: 600;
+            margin-left: 8px;
+            color: #24292f;
+        }
+
+        .visibility-label {
+            font-size: 12px;
+            color: #57606a;
+            margin-top: 2px;
+            font-weight: 500;
+        }
+
+        /* Contributor Count */
+        .contributor-count {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: #24292f;
+            font-weight: 500;
+        }
+
+        .contributor-count svg {
+            margin-right: 4px;
+            fill: #24292f;
+        }
+
+        /* GitHub Icons (Octicons) */
+        .octicon {
+            display: inline-block;
+            overflow: visible !important;
+            vertical-align: text-bottom;
+            fill: #24292f;
+        }
+
+        /* Contributors Growth Chart */
+        .contributors-chart-container {
+            margin-top: 16px;
+            width: 100%;
+            height: 60px;
+            position: relative;
+        }
+
+        .contributors-chart {
+            width: 100%;
+            height: 100%;
+        }
+
+        .chart-area {
+            fill: url(#area-gradient);
+            stroke: none;
+            opacity: 0;
+        }
+
+        .chart-line {
+            fill: none;
+            stroke: #2da44e;
+            stroke-width: 3;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            opacity: 1;
+        }
+        
+        /* States for two-frame GIF */
+        .frame1 .chart-line {
+            stroke-dashoffset: 1000; /* Hide line completely */
+        }
+        
+        .frame2 .chart-line {
+            stroke-dashoffset: 0; /* Show line completely */
+        }
+
+        /* Data point markers */
+        .data-point {
+            fill: #2da44e;
+            stroke: white;
+            stroke-width: 1.5;
+            opacity: 0;
+            cursor: pointer;
+        }
+        
+        .data-point:hover {
+            fill: #1a7f37;
+            r: 5;
+        }
+        
+        /* States for two-frame GIF */
+        .frame1 .data-point {
+            opacity: 0; /* Hide points in frame 1 */
+        }
+        
+        .frame2 .data-point {
+            opacity: 1; /* Show points in frame 2 */
+        }
+
+        /* Tooltip styling */
+        .tooltip {
+            position: absolute;
+            background: rgba(22, 27, 34, 0.9);
+            color: #e6edf3;
+            padding: 6px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            white-space: nowrap;
+        }
+
+        /* Frame classes for 2-frame GIF format */
+        body.frame1 .chart-area {
+            opacity: 0;
+        }
+        
+        body.frame2 .chart-area {
+            opacity: 0.7;
+        }
+
+        /* Avatar Row */
+        .avatar-row {
+            display: flex;
+            margin-top: 8px;
+            overflow-x: hidden;
+        }
+
+        .avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            margin-right: 4px;
+            opacity: 0;
+            border: 1px solid white;
+        }
+
+        /* States for two-frame GIF */
+        .frame1 .avatar {
+            opacity: 0;
+        }
+        
+        .frame2 .avatar {
+            opacity: 1;
+        }
+
+        /* Milestone markers */
+        .milestone-marker {
+            fill: #f1e05a;
+            opacity: 0;
+        }
+        
+        /* States for two-frame GIF */
+        .frame1 .milestone-marker {
+            opacity: 0;
+        }
+        
+        .frame2 .milestone-marker {
+            opacity: 1;
+        }
+
+        /* Chart Axis */
+        .axis-line {
+            stroke: #d0d7de;
+            stroke-width: 1;
+        }
+        
+        .grid-line {
+            stroke: #eaeef2;
+            stroke-width: 1;
+            stroke-dasharray: 4, 4;
+        }
+
+        .axis-label {
+            font-size: 10px;
+            fill: #57606a;
+            font-weight: 500;
+        }
+        
+        .value-label {
+            font-size: 9px;
+            fill: #57606a;
+            text-anchor: end;
+        }
+        
+        .date-label {
+            font-size: 9px;
+            fill: #57606a;
+            text-anchor: middle;
+        }
+    </style>
+</head>
+<body>
+    <div class="github-container">
+        <div class="repo-header">
+            <div class="repo-info">
+                <div class="repo-visibility">
+                    <svg class="octicon" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">
+                        <path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7.75.75 0 1 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5Zm10.5-1h-8a1 1 0 0 0-1 1v6.708A2.486 2.486 0 0 1 4.5 9h8ZM5 12.25a.25.25 0 0 1 .25-.25h3.5a.25.25 0 0 1 .25.25v3.25a.25.25 0 0 1-.4.2l-1.45-1.087a.249.249 0 0 0-.3 0L5.4 15.7a.25.25 0 0 1-.4-.2Z"></path>
+                    </svg>
+                    <span class="repo-name">RepoGif</span>
+                </div>
+                <div class="contributor-count">
+                    <svg class="octicon" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">
+                        <path d="M10.5 5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm.061 3.073a4 4 0 1 0-5.123 0 6.004 6.004 0 0 0-3.431 5.142.75.75 0 0 0 1.498.07 4.5 4.5 0 0 1 8.99 0 .75.75 0 1 0 1.498-.07 6.005 6.005 0 0 0-3.432-5.142Z"></path>
+                    </svg>
+                    <span id="contributor-count-value">0</span> contributors
+                </div>
+            </div>
+
+            <div class="contributors-chart-container">
+                <div class="tooltip" id="tooltip"></div>
+                <svg class="contributors-chart" viewBox="0 0 500 60" preserveAspectRatio="none">
+                    <!-- Gradient definition -->
+                    <defs>
+                        <linearGradient id="area-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stop-color="#2da44e" stop-opacity="0.6" />
+                            <stop offset="100%" stop-color="#2da44e" stop-opacity="0.1" />
+                        </linearGradient>
+                    </defs>
+                    
+                    <!-- Grid lines -->
+                    <g id="grid-lines"></g>
+                    
+                    <!-- X and Y axis -->
+                    <line class="axis-line" x1="0" y1="58" x2="500" y2="58"></line>
+                    <line class="axis-line" x1="0" y1="0" x2="0" y2="58"></line>
+                    
+                    <!-- Axis labels -->
+                    <text class="axis-label" x="5" y="10">Contributors</text>
+                    <text class="axis-label" x="495" y="58" text-anchor="end">Time</text>
+                    
+                    <!-- Y-axis value labels -->
+                    <g id="y-axis-labels"></g>
+                    
+                    <!-- X-axis date labels -->
+                    <g id="x-axis-labels"></g>
+                    
+                    <!-- Area under the line -->
+                    <path id="area-path" class="chart-area"></path>
+                    
+                    <!-- Line representing contributor growth -->
+                    <path id="line-path" class="chart-line"></path>
+                    
+                    <!-- Data points will be added dynamically -->
+                    <g id="data-points"></g>
+                    
+                    <!-- Milestone markers will be added dynamically -->
+                    <g id="milestone-markers"></g>
+                </svg>
+            </div>
+
+            <div class="avatar-row" id="avatar-container">
+                <!-- Avatars will be added dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to parse URL parameters
+        function getUrlParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        // Function to process contributors data
+        function processContributors(contributorsData) {
+            // Sort contributors by date
+            return contributorsData.sort((a, b) => {
+                return new Date(a.date) - new Date(b.date);
+            });
+        }
+        
+        // Function to get max contributor count for scaling
+        function getMaxContributorCount(contributors) {
+            return contributors.length;
+        }
+        
+        // Function to generate path data for the line chart
+        function generateLinePath(contributors) {
+            if (!contributors || contributors.length === 0) return "";
+            
+            const totalPoints = contributors.length;
+            const maxCount = getMaxContributorCount(contributors);
+            const width = 500;
+            const height = 50;
+            const pointSpacing = width / Math.max(totalPoints - 1, 1);
+            
+            let path = "";
+            
+            contributors.forEach((contributor, index) => {
+                const x = index * pointSpacing;
+                const y = height - (index + 1) / maxCount * height;
+                
+                if (index === 0) {
+                    path = `M${x},${y}`;
+                } else {
+                    path += ` L${x},${y}`;
+                }
+            });
+            
+            return path;
+        }
+        
+        // Function to generate path data for the area under the line
+        function generateAreaPath(contributors) {
+            if (!contributors || contributors.length === 0) return "";
+            
+            const totalPoints = contributors.length;
+            const maxCount = getMaxContributorCount(contributors);
+            const width = 500;
+            const height = 50;
+            const pointSpacing = width / Math.max(totalPoints - 1, 1);
+            
+            let path = "";
+            
+            contributors.forEach((contributor, index) => {
+                const x = index * pointSpacing;
+                const y = height - (index + 1) / maxCount * height;
+                
+                if (index === 0) {
+                    path = `M${x},${y}`;
+                } else {
+                    path += ` L${x},${y}`;
+                }
+            });
+            
+            // Complete the path to form an area
+            path += ` L${(totalPoints-1) * pointSpacing},${height} L0,${height} Z`;
+            
+            return path;
+        }
+        
+        // Function to add grid lines
+        function addGridLines() {
+            const gridContainer = document.getElementById('grid-lines');
+            const height = 58;
+            const width = 500;
+            
+            // Add horizontal grid lines
+            for (let i = 1; i < 5; i++) {
+                const y = height * i / 5;
+                const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                line.setAttribute("x1", "0");
+                line.setAttribute("y1", y);
+                line.setAttribute("x2", width);
+                line.setAttribute("y2", y);
+                line.setAttribute("class", "grid-line");
+                gridContainer.appendChild(line);
+            }
+        }
+        
+        // Function to add y-axis labels
+        function addYAxisLabels(maxCount) {
+            const labelContainer = document.getElementById('y-axis-labels');
+            const height = 58;
+            
+            for (let i = 0; i <= 5; i++) {
+                const value = Math.round(maxCount * i / 5);
+                const y = height - height * i / 5;
+                
+                const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                label.setAttribute("x", "-5");
+                label.setAttribute("y", y + 3); // +3 for vertical alignment
+                label.setAttribute("class", "value-label");
+                label.textContent = value;
+                
+                labelContainer.appendChild(label);
+            }
+        }
+        
+        // Function to add x-axis date labels
+        function addXAxisLabels(contributors) {
+            if (!contributors || contributors.length === 0) return;
+            
+            const labelContainer = document.getElementById('x-axis-labels');
+            const totalPoints = contributors.length;
+            const width = 500;
+            const height = 58;
+            
+            // Add labels at start, middle and end
+            const positions = [0, Math.floor(totalPoints / 2), totalPoints - 1];
+            
+            positions.forEach(index => {
+                if (index < contributors.length) {
+                    const date = new Date(contributors[index].date);
+                    const formattedDate = `${date.getMonth()+1}/${date.getDate()}/${date.getFullYear().toString().substr(2)}`;
+                    const x = index * (width / Math.max(totalPoints - 1, 1));
+                    
+                    const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                    label.setAttribute("x", x);
+                    label.setAttribute("y", height + 12);
+                    label.setAttribute("class", "date-label");
+                    label.textContent = formattedDate;
+                    
+                    labelContainer.appendChild(label);
+                }
+            });
+        }
+        
+        // Function to add data points
+        function addDataPoints(contributors) {
+            const pointsContainer = document.getElementById('data-points');
+            const tooltip = document.getElementById('tooltip');
+            const totalPoints = contributors.length;
+            const maxCount = getMaxContributorCount(contributors);
+            const width = 500;
+            const height = 50;
+            const pointSpacing = width / Math.max(totalPoints - 1, 1);
+            
+            contributors.forEach((contributor, index) => {
+                const x = index * pointSpacing;
+                const y = height - (index + 1) / maxCount * height;
+                
+                const point = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                point.setAttribute("cx", x);
+                point.setAttribute("cy", y);
+                point.setAttribute("r", "3");
+                point.setAttribute("class", "data-point");
+                point.setAttribute("data-index", index);
+                point.setAttribute("data-username", contributor.login);
+                point.setAttribute("data-date", new Date(contributor.date).toLocaleDateString());
+                point.setAttribute("data-count", index + 1);
+                
+                // Add event listeners for tooltip
+                point.addEventListener('mouseover', function(e) {
+                    const target = e.target;
+                    const username = target.getAttribute('data-username');
+                    const date = target.getAttribute('data-date');
+                    const count = target.getAttribute('data-count');
+                    
+                    tooltip.innerHTML = `<strong>${username}</strong><br>Joined: ${date}<br>Total: ${count} contributors`;
+                    tooltip.style.opacity = "1";
+                    
+                    // Position tooltip near the point
+                    const rect = target.getBoundingClientRect();
+                    const containerRect = document.querySelector('.contributors-chart-container').getBoundingClientRect();
+                    tooltip.style.left = (rect.left - containerRect.left + rect.width/2) + 'px';
+                    tooltip.style.top = (rect.top - containerRect.top - 70) + 'px';
+                });
+                
+                point.addEventListener('mouseout', function() {
+                    tooltip.style.opacity = "0";
+                });
+                
+                pointsContainer.appendChild(point);
+            });
+        }
+        
+        // Function to add milestone markers
+        function addMilestoneMarkers(contributors) {
+            const milestoneContainer = document.getElementById('milestone-markers');
+            const totalPoints = contributors.length;
+            const width = 500;
+            const height = 50;
+            const pointSpacing = width / Math.max(totalPoints - 1, 1);
+            
+            // Add milestone marker every 10th contributor
+            contributors.forEach((contributor, index) => {
+                if ((index + 1) % 10 === 0) {
+                    const x = index * pointSpacing;
+                    const y = height - (index / (totalPoints - 1 || 1)) * height;
+                    
+                    const marker = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                    marker.setAttribute("cx", x);
+                    marker.setAttribute("cy", y);
+                    marker.setAttribute("r", "4");
+                    marker.setAttribute("class", "milestone-marker");
+                    marker.setAttribute("data-index", index);
+                    
+                    milestoneContainer.appendChild(marker);
+                }
+            });
+        }
+        
+        // Function to add avatars
+        function addAvatars(contributors) {
+            const avatarContainer = document.getElementById('avatar-container');
+            
+            contributors.forEach((contributor, index) => {
+                const avatar = document.createElement('img');
+                avatar.src = contributor.avatar_url;
+                avatar.alt = contributor.login;
+                avatar.title = contributor.login;
+                avatar.className = 'avatar';
+                avatar.setAttribute('data-index', index);
+                
+                avatarContainer.appendChild(avatar);
+            });
+        }
+        
+        // Configure the visualization display based on URL parameters
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set repository name from URL parameter
+            const repoName = getUrlParam('repo_name');
+            if (repoName) {
+                document.querySelector('.repo-name').textContent = repoName;
+            }
+            
+            // Get contributors data from URL parameter
+            const contributorsJson = getUrlParam('contributors');
+            let contributors = [];
+            
+            if (contributorsJson) {
+                try {
+                    contributors = processContributors(JSON.parse(decodeURIComponent(contributorsJson)));
+                } catch (e) {
+                    console.error('Error parsing contributors data:', e);
+                }
+            }
+            
+            // Update contributor count
+            document.getElementById('contributor-count-value').textContent = contributors.length;
+            
+            // Generate and set paths for the chart
+            const linePath = document.getElementById('line-path');
+            const areaPath = document.getElementById('area-path');
+            
+            linePath.setAttribute('d', generateLinePath(contributors));
+            areaPath.setAttribute('d', generateAreaPath(contributors));
+            
+            // Add milestone markers
+            addMilestoneMarkers(contributors);
+            
+            // Add avatars
+            addAvatars(contributors);
+            
+            // Set custom width and height from URL parameters
+            const width = getUrlParam('width') || 580;
+            const height = getUrlParam('height') || 140;
+            
+            // Apply custom dimensions as CSS variables
+            document.documentElement.style.setProperty('--gif-width', `${width}px`);
+            document.documentElement.style.setProperty('--gif-height', `${height}px`);
+            
+            // Add grid lines and axis labels
+            addGridLines();
+            addYAxisLabels(contributors.length);
+            addXAxisLabels(contributors);
+            
+            // Add data points
+            addDataPoints(contributors);
+            
+            // Check for animation state or frame parameters
+            const animationState = getUrlParam('animation_state');
+            const frameState = getUrlParam('frame');
+            
+            // Determine which frame to show based on available parameters
+            let showFrame2 = false;
+            
+            if (animationState === 'animated') {
+                // Legacy parameter from generator.py
+                showFrame2 = true;
+            } else if (frameState === '2') {
+                // New parameter format
+                showFrame2 = true;
+            }
+            
+            // Apply the appropriate frame class to the body
+            if (showFrame2) {
+                document.body.classList.add('frame2');
+            } else {
+                document.body.classList.add('frame1');
+            }
+        });
+    </script>
+</body>
+</html>
