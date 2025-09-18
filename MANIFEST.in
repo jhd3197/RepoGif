@@ -1,0 +1,5 @@
+# Include all HTML templates and PNG files from template directories
+recursive-include repogif/templates *.html *.png
+
+# Include the README.md for PyPI long description
+include README.md

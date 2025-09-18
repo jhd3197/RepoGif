@@ -7,6 +7,7 @@ long_description = (this_directory / "README.md").read_text(encoding="utf-8")
 setup(
     name="repogif",
     version='0.0.3',
+    include_package_data=True,
     description="Generate beautiful animated GIFs that mimic GitHub repo stars/forks with realistic visuals. Perfect for social sharing, repo previews, documentation, or just for fun.",
     author="Juan Denis",
     author_email="juan@vene.co",
