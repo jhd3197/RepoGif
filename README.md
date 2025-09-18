@@ -162,6 +162,22 @@ An eye-catching badge with pulsing star effect animation.
 
 **Default Dimensions**: 280x280 pixels
 
+### Template 8 - Commit Pattern
+
+![template8_default](https://github.com/user-attachments/assets/43284e90-93f2-402b-b835-1b94fc037a17)
+
+**Variants**:
+- ![template8_increasing](https://github.com/user-attachments/assets/9d2ff7d7-f2a4-4384-b520-7358810cdd25)
+- ![template8_with_zeros](https://github.com/user-attachments/assets/e1666ee3-8ae6-4fce-a04d-e6cc9be12480)
+
+### Template 9 - Contributors
+
+![template9_clustered](https://github.com/user-attachments/assets/adb8bff4-8719-4e04-8e6e-0b9b03e60f13)
+
+**Variants**:
+- ![template9_large](https://github.com/user-attachments/assets/2f34be6d-be2a-494d-822b-edab90c3af82)
+- ![template9_small](https://github.com/user-attachments/assets/2fab08a1-b792-4088-b49c-85093b5f03f2)
+
 
 ## Troubleshooting
 
