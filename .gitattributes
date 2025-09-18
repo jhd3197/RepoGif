@@ -1,0 +1,4 @@
+*.py linguist-language=Python
+*.html linguist-vendored
+*.png linguist-vendored
+* text=auto eol=lf
