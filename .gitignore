@@ -16,6 +16,7 @@ env/
 
 # Generated output
 *.gif
+!examples/samples/*.gif
 
 # IDE specific files
 .idea/
