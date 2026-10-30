@@ -181,21 +181,45 @@ An eye-catching badge with pulsing star effect animation.
 
 ### Template 10 - Modern Spotlight
 
-A wide glass card on a dark aurora background, sized for social posts and repository previews. The star control fills gold and the star count highlights between the unstarred and starred frames.
+A glass card for X posts. It renders at 2x and downscales to the output size, then eases across 30 frames: the star count climbs, the star fills, and the card picks up the accent color. The same frames are written as a GIF and an MP4.
 
-**Default Dimensions**: 640x360 pixels
+**X sizes**: 1200×675 and 1080×1080. Frames are drawn at 2× and downscaled, so type stays sharp. GIF output is the exact size and stays under 15MB. The 1200×675 MP4 is 1200×676 because H.264 needs an even height.
+
+Optional fields: `description`, `language`, `topics`, `accent`, `owner`, and a `hero` screenshot.
 
 ```python
 generate_repo_gif(
-    repo_name="RepoGif",
-    stars="5.8k",
-    forks=397,
-    out="modern_spotlight.gif",
+    repo_name="Pana",
+    owner="jhd3197",
+    description="Free multiplayer browser games for friends, with customizable capybaras. Share a link and play together.",
+    language="JavaScript",
+    topics=["multiplayer", "browser-games", "threejs"],
+    stars=1,
+    forks=0,
+    accent="#ffc629",
+    hero="examples/assets/pana-hub.jpg",
+    hero_focus="94% 42%",
+    out="examples/samples/pana-1200x675.gif",
+    mp4="examples/samples/pana-1200x675.mp4",
     template="template10",
-    width=640,
-    height=360,
+    width=1200,
+    height=675,
 )
 ```
+
+Square posts use the same call with `width=1080` and `height=1080`. `examples/test_template10.py` writes both sizes, as GIF and MP4, for [Pana](https://github.com/jhd3197/Pana) and [Faro](https://github.com/jhd3197/Faro).
+
+#### jhd3197/Pana
+
+![Pana 1200x675](examples/samples/pana-1200x675.gif)
+
+![Pana 1080x1080](examples/samples/pana-1080x1080.gif)
+
+#### jhd3197/Faro
+
+![Faro 1200x675](examples/samples/faro-1200x675.gif)
+
+![Faro 1080x1080](examples/samples/faro-1080x1080.gif)
 
 
 ## Troubleshooting
