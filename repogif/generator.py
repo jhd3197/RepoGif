@@ -31,7 +31,8 @@ class RepoGifGenerator:
             "template6": "repogif.templates.template6",
             "template7": "repogif.templates.template7",
             "template8": "repogif.templates.template8",
-            "template9": "repogif.templates.template9"
+            "template9": "repogif.templates.template9",
+            "template10": "repogif.templates.template10"
         }
         self.default_template = "template1"
     

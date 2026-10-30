@@ -179,6 +179,25 @@ An eye-catching badge with pulsing star effect animation.
 - ![template9_small](https://github.com/user-attachments/assets/2fab08a1-b792-4088-b49c-85093b5f03f2)
 
 
+### Template 10 - Modern Spotlight
+
+A wide glass card on a dark aurora background, sized for social posts and repository previews. The star control fills gold and the star count highlights between the unstarred and starred frames.
+
+**Default Dimensions**: 640x360 pixels
+
+```python
+generate_repo_gif(
+    repo_name="RepoGif",
+    stars="5.8k",
+    forks=397,
+    out="modern_spotlight.gif",
+    template="template10",
+    width=640,
+    height=360,
+)
+```
+
+
 ## Troubleshooting
 
 ### Common Issues

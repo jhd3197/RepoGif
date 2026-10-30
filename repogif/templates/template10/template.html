@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RepoGif - Modern Spotlight</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+        }
+
+        body {
+            width: var(--gif-width, 640px);
+            height: var(--gif-height, 360px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #07090f;
+            color: #f7f8fb;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .aurora {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(36px);
+            pointer-events: none;
+        }
+
+        .aurora-violet {
+            width: 280px;
+            height: 280px;
+            top: -90px;
+            right: -40px;
+            background: rgba(109, 94, 252, 0.55);
+        }
+
+        .aurora-mint {
+            width: 260px;
+            height: 260px;
+            bottom: -110px;
+            left: -50px;
+            background: rgba(31, 214, 162, 0.38);
+        }
+
+        .aurora-gold {
+            width: 180px;
+            height: 180px;
+            top: 40px;
+            left: 28%;
+            background: rgba(245, 196, 81, 0.16);
+        }
+
+        .spotlight {
+            position: relative;
+            z-index: 1;
+            width: calc(100% - 48px);
+            height: calc(100% - 48px);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 32px 36px 28px;
+            border-radius: 28px;
+            background:
+                linear-gradient(180deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.03));
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            box-shadow:
+                0 24px 60px rgba(0, 0, 0, 0.45),
+                inset 0 1px 0 rgba(255, 255, 255, 0.18);
+        }
+
+        .spotlight.starred {
+            border-color: rgba(245, 196, 81, 0.55);
+            box-shadow:
+                0 24px 60px rgba(0, 0, 0, 0.45),
+                0 0 0 1px rgba(245, 196, 81, 0.25),
+                inset 0 1px 0 rgba(255, 255, 255, 0.22);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 36px;
+        }
+
+        .identity {
+            min-width: 0;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .kicker {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: #a7b0c0;
+            margin-bottom: 14px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #3dd68c;
+            box-shadow: 0 0 0 4px rgba(61, 214, 140, 0.16);
+        }
+
+        .repo-name {
+            display: block;
+            width: 100%;
+            font-size: 52px;
+            font-weight: 700;
+            letter-spacing: -0.035em;
+            line-height: 1;
+            color: #f7f8fb;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .star-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+            margin-top: 28px;
+            padding: 10px 16px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            color: #f7f8fb;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .star-pill .pill-icon {
+            width: 16px;
+            height: 16px;
+            fill: #c5ccd8;
+        }
+
+        .spotlight.starred .star-pill {
+            background: #f5c451;
+            border-color: #f5c451;
+            color: #1a1404;
+        }
+
+        .spotlight.starred .star-pill .pill-icon {
+            fill: #1a1404;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .stats.no-forks {
+            grid-template-columns: 1fr;
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px 18px;
+            border-radius: 18px;
+            background: rgba(7, 9, 15, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .stat-icon {
+            width: 28px;
+            height: 28px;
+            flex-shrink: 0;
+        }
+
+        .star-icon {
+            fill: #8b93a7;
+        }
+
+        .fork-icon {
+            fill: #c5ccd8;
+        }
+
+        .star-section.starred {
+            background: rgba(245, 196, 81, 0.12);
+            border-color: rgba(245, 196, 81, 0.4);
+        }
+
+        .star-section.starred .star-icon {
+            fill: #f5c451;
+            filter: drop-shadow(0 0 8px rgba(245, 196, 81, 0.65));
+        }
+
+        .stat-copy {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .star-count,
+        .fork-count {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+            color: #f7f8fb;
+        }
+
+        .star-section.starred .star-count {
+            color: #f5c451;
+        }
+
+        .stat-label {
+            margin-top: 2px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #a7b0c0;
+        }
+    </style>
+</head>
+<body>
+    <div class="aurora aurora-violet"></div>
+    <div class="aurora aurora-mint"></div>
+    <div class="aurora aurora-gold"></div>
+
+    <div class="spotlight" id="spotlight">
+        <div class="header">
+            <div class="identity">
+                <div class="kicker">
+                    <span class="dot"></span>
+                    Public
+                </div>
+                <h1 class="repo-name">RepoGif</h1>
+            </div>
+            <div class="star-pill" id="star-pill">
+                <svg class="pill-icon" viewBox="0 0 16 16" aria-hidden="true">
+                    <path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"></path>
+                </svg>
+                <span class="pill-label">Star</span>
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stat star-section" id="star-section">
+                <svg class="stat-icon star-icon" viewBox="0 0 16 16" aria-hidden="true">
+                    <path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"></path>
+                </svg>
+                <div class="stat-copy">
+                    <span class="star-count">5.8k</span>
+                    <span class="stat-label">Stars</span>
+                </div>
+            </div>
+            <div class="stat fork-section">
+                <svg class="stat-icon fork-icon" viewBox="0 0 16 16" aria-hidden="true">
+                    <path d="M5 5.372v.878c0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75v-.878a2.25 2.25 0 1 1 1.5 0v.878a2.25 2.25 0 0 1-2.25 2.25h-1.5v2.128a2.251 2.251 0 1 1-1.5 0V8.5h-1.5A2.25 2.25 0 0 1 3.5 6.25v-.878a2.25 2.25 0 1 1 1.5 0ZM5 3.25a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Zm6.75.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm-3 8.75a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Z"></path>
+                </svg>
+                <div class="stat-copy">
+                    <span class="fork-count">397</span>
+                    <span class="stat-label">Forks</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function getUrlParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const repoName = getUrlParam('repo_name');
+            if (repoName) {
+                document.querySelector('.repo-name').textContent = repoName;
+            }
+
+            const stars = getUrlParam('stars');
+            if (stars) {
+                document.querySelector('.star-count').textContent = stars;
+            }
+
+            const forks = getUrlParam('forks');
+            if (forks) {
+                document.querySelector('.fork-count').textContent = forks;
+            }
+
+            const isStarred = getUrlParam('starred');
+            const spotlight = document.getElementById('spotlight');
+            const starSection = document.getElementById('star-section');
+            const pillLabel = document.querySelector('.pill-label');
+            if (isStarred === 'true') {
+                spotlight.classList.add('starred');
+                starSection.classList.add('starred');
+                pillLabel.textContent = 'Starred';
+            } else {
+                spotlight.classList.remove('starred');
+                starSection.classList.remove('starred');
+                pillLabel.textContent = 'Star';
+            }
+
+            const showForks = getUrlParam('show_forks');
+            if (showForks === 'false') {
+                const forkSection = document.querySelector('.fork-section');
+                const stats = document.querySelector('.stats');
+                if (forkSection) {
+                    forkSection.style.display = 'none';
+                }
+                if (stats) {
+                    stats.classList.add('no-forks');
+                }
+            }
+
+            const width = getUrlParam('width') || 640;
+            const height = getUrlParam('height') || 360;
+            document.documentElement.style.setProperty('--gif-width', `${width}px`);
+            document.documentElement.style.setProperty('--gif-height', `${height}px`);
+        });
+    </script>
+</body>
+</html>
