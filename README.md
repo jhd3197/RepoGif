@@ -253,6 +253,31 @@ generate_repo_gif(
 
 ![Run it, ink, 1080x1080](examples/samples/repogif-run-ink-square.gif)
 
+#### Themes and accents
+
+`accent="#hex"` picks the plate color. The text color flips automatically on dark plates, so any accent stays readable.
+
+| Theme | Accent | Sample |
+|-------|--------|--------|
+| Gold (default) | `#e3b341` | [MP4](examples/samples/repogif-run-gold-wide.mp4) <br> ![Gold](examples/samples/repogif-run-gold-wide.gif) |
+| Ink | `#111110` | [MP4](examples/samples/repogif-run-ink-square.mp4) <br> ![Ink](examples/samples/repogif-run-ink-square.gif) |
+| Signal | `#ff5a1f` | [MP4](examples/samples/repogif-run-signal-wide.mp4) |
+
+#### Wide and square
+
+Use `width=1200, height=675` for the feed and README, and `width=1080, height=1080` for posts.
+
+| Size | Theme | Files |
+|------|-------|-------|
+| 1200x675 | Gold | [GIF](examples/samples/repogif-run-gold-wide.gif), [MP4](examples/samples/repogif-run-gold-wide.mp4) |
+| 1200x675 | Signal | [MP4](examples/samples/repogif-run-signal-wide.mp4) |
+| 1080x1080 | Gold | [MP4](examples/samples/repogif-run-gold-square.mp4) |
+| 1080x1080 | Ink | [GIF](examples/samples/repogif-run-ink-square.gif), [MP4](examples/samples/repogif-run-ink-square.mp4) |
+
+#### Page capture (coming soon)
+
+Template 12, a scrolling capture of a live GitHub repo page, isn't released yet. Previews: [Signal, wide](examples/samples/repogif-page-signal-wide.mp4) and [Ink, square](examples/samples/repogif-page-ink-square.mp4).
+
 ## Troubleshooting
 
 ### Common Issues
