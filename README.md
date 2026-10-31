@@ -222,6 +222,37 @@ Square posts use the same call with `width=1080` and `height=1080`. `examples/te
 ![Faro 1080x1080](examples/samples/faro-1080x1080.gif)
 
 
+### Template 13 - Run it
+
+A usage snippet types itself into a code editor, then the output line appears and the hero image slides out like a print. Good for showing how little code it takes to use a project.
+
+Optional fields: `code` (the snippet to type), `hero`, `accent` (the plate color, default `#e3b341`), `owner`, and `language`. It renders at 2x like template 10, and also writes an MP4 if you pass `mp4=`.
+
+```python
+generate_repo_gif(
+    repo_name="Pana",
+    owner="jhd3197",
+    template="template13",
+    code='''from repogif import generate_repo_gif
+
+generate_repo_gif(
+    repo_name="Pana",
+    owner="jhd3197",
+    template="template13",
+    out="pana.gif",
+)''',
+    hero="examples/assets/pana-hub.jpg",
+    accent="#e3b341",
+    out="examples/samples/repogif-run-gold-wide.gif",
+    width=1200,
+    height=675,
+)
+```
+
+![Run it, gold, 1200x675](examples/samples/repogif-run-gold-wide.gif)
+
+![Run it, ink, 1080x1080](examples/samples/repogif-run-ink-square.gif)
+
 ## Troubleshooting
 
 ### Common Issues

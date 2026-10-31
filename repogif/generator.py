@@ -6,6 +6,7 @@ header GIFs using customizable templates.
 """
 
 import base64
+import importlib.util
 import mimetypes
 import os
 import re
@@ -22,6 +23,11 @@ _GIF_BYTE_LIMIT = 15 * 1024 * 1024
 _TEMPLATE10_FRAMES = 30
 _TEMPLATE10_FPS = 20
 _TEMPLATE10_SCALE = 2
+# Multi-frame templates: name -> default frame count. They share the 2x
+# supersampled, progress-driven capture path.
+_MOTION_TEMPLATES = {"template10": _TEMPLATE10_FRAMES, "template11": 56, "template12": 150, "template13": 130}
+_PAGE_TEMPLATES = {"template12"}
+_IMAGE_EXT = (".png", ".jpg", ".jpeg", ".gif", ".webp", ".avif", ".svg")
 
 
 def _normalize_accent(accent):
@@ -52,7 +58,7 @@ def _normalize_topics(topics):
 
 def _resolve_frames(template_name, frames):
     if frames is None:
-        return _TEMPLATE10_FRAMES if template_name == "template10" else 2
+        return _MOTION_TEMPLATES.get(template_name, 2)
     count = int(frames)
     if count < 1:
         raise ValueError("frames must be at least 1")
@@ -61,7 +67,7 @@ def _resolve_frames(template_name, frames):
 
 def _resolve_scale(template_name, scale):
     if scale is None:
-        return _TEMPLATE10_SCALE if template_name == "template10" else 1
+        return _TEMPLATE10_SCALE if template_name in _MOTION_TEMPLATES else 1
     value = int(scale)
     if value < 1:
         raise ValueError("scale must be at least 1")
@@ -105,6 +111,55 @@ def _hero_source(hero):
     return f"data:{mime};base64,{encoded}"
 
 
+def _is_page_url(value):
+    """True for an http(s) URL that points at a web page rather than an image."""
+    if not value or not str(value).startswith(("http://", "https://")):
+        return False
+    path = str(value).split("?", 1)[0].split("#", 1)[0].lower()
+    return not path.endswith(_IMAGE_EXT)
+
+
+def _capture_page(sync_playwright, url, path, max_height=4200):
+    """Screenshot a live page (a GitHub repo by default) for template12.
+
+    Renders at 1280 CSS px wide, 2x, in GitHub's dark theme, and keeps the
+    repo content area when it can find it. The result is cropped to
+    max_height CSS px so very long READMEs stay a sensible size.
+    """
+    print(f"Capturing {url} ...")
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        page = browser.new_page(
+            viewport={"width": 1280, "height": 900},
+            device_scale_factor=2,
+            color_scheme="dark",
+        )
+        page.goto(url, wait_until="networkidle", timeout=60000)
+        # Cookie and sign-in banners cover the content in a screenshot.
+        page.add_style_tag(content=(
+            ".js-header-wrapper, header.AppHeader, .flash-full, "
+            "[data-testid='cookie-banner'], #cookie-consent-banner "
+            "{ display: none !important; }"
+        ))
+        page.wait_for_timeout(400)
+        target = None
+        for selector in ("#repo-content-pjax-container", "main"):
+            locator = page.locator(selector).first
+            if locator.count() and locator.is_visible():
+                target = locator
+                break
+        if target is not None:
+            target.screenshot(path=path)
+        else:
+            page.screenshot(path=path, full_page=True)
+        browser.close()
+    image = Image.open(path)
+    limit = max_height * 2
+    if image.height > limit:
+        image.crop((0, 0, image.width, limit)).save(path)
+    return path
+
+
 def _query(params):
     clean = {}
     for key, value in params.items():
@@ -135,7 +190,10 @@ def _pad_even(image):
 
 def _palette_from_frames(frames, colors):
     thumbs = []
-    indexes = sorted({0, len(frames) // 2, len(frames) - 1})
+    # Sample frames across the whole animation so content that only shows up
+    # mid-scroll (template12) still gets palette entries.
+    samples = min(8, len(frames))
+    indexes = sorted({round(i * (len(frames) - 1) / max(1, samples - 1)) for i in range(samples)})
     for index in indexes:
         thumb = frames[index].copy()
         thumb.thumbnail((420, 236))
@@ -256,7 +314,7 @@ def _save_mp4(frames, path, fps):
 def _use_legacy_capture(template_name, frames, scale, mp4, description, language,
                         topics, accent, hero, owner, hero_focus):
     """Templates 1-9 keep the original two-frame capture unless new options are set."""
-    if template_name == "template10":
+    if template_name in _MOTION_TEMPLATES:
         return False
     if frames is not None or scale is not None or mp4:
         return False
@@ -284,13 +342,17 @@ class RepoGifGenerator:
             "template7": "repogif.templates.template7",
             "template8": "repogif.templates.template8",
             "template9": "repogif.templates.template9",
-            "template10": "repogif.templates.template10"
+            "template10": "repogif.templates.template10",
+            "template11": "repogif.templates.template11",
+            "template12": "repogif.templates.template12",
+            "template13": "repogif.templates.template13"
         }
         self.default_template = "template1"
 
     def get_available_templates(self):
         """Returns a list of available template names."""
-        return list(self.templates.keys())
+        return [name for name, module in self.templates.items()
+                if importlib.util.find_spec(module) is not None]
 
     def generate_gif(self,
                      repo_name="repogif",
@@ -314,7 +376,8 @@ class RepoGifGenerator:
                      frames=None,
                      fps=_TEMPLATE10_FPS,
                      scale=None,
-                     mp4=None):
+                     mp4=None,
+                     code=None):
         """
         Generate a GitHub repository header GIF using the specified template.
 
@@ -359,6 +422,8 @@ class RepoGifGenerator:
         """
         template_name = template or self.default_template
 
+        if template_name in self.templates and template_name not in self.get_available_templates():
+            raise ValueError(f"Template '{template_name}' is not included in this install.")
         if template_name not in self.templates:
             available = ", ".join(self.get_available_templates())
             raise ValueError(f"Template '{template_name}' not found. Available templates: {available}")
@@ -402,13 +467,20 @@ class RepoGifGenerator:
                 frame_count = _resolve_frames(template_name, frames)
                 device_scale = _resolve_scale(template_name, scale)
                 duration_ms = _frame_duration_ms(frame_count, fps)
+                if template_name in _PAGE_TEMPLATES:
+                    if not hero and owner:
+                        hero = f"https://github.com/{owner}/{repo_name}"
+                    if _is_page_url(hero):
+                        hero = _capture_page(
+                            sync_playwright, hero, os.path.join(temp_dir, "page.png")
+                        )
                 hero_src = _hero_source(hero)
                 images = self._capture_frames(
                     sync_playwright, template_url, temp_dir,
                     repo_name, stars, forks, show_forks, width, height,
                     contributors, commits, template_name,
                     description, language, topics, accent, hero_src, hero_focus, owner,
-                    frame_count, device_scale,
+                    frame_count, device_scale, code,
                 )
                 print("Creating GIF from screenshots...")
                 if frame_count <= 2 and device_scale == 1 and not mp4_path:
@@ -520,7 +592,7 @@ class RepoGifGenerator:
                         repo_name, stars, forks, show_forks, width, height,
                         contributors, commits, template_name,
                         description, language, topics, accent, hero_src, hero_focus, owner,
-                        frame_count, device_scale):
+                        frame_count, device_scale, code=None):
         images = []
         print(f"Capturing {frame_count} frames at {width}x{height} @{device_scale}x...")
         with sync_playwright() as p:
@@ -544,6 +616,8 @@ class RepoGifGenerator:
                 }
                 if description:
                     params["description"] = description
+                if code:
+                    params["code"] = code
                 if language:
                     params["language"] = language
                 if topics:
@@ -570,10 +644,12 @@ class RepoGifGenerator:
                         """() => {
                             const img = document.querySelector('.hero-image');
                             if (!img) return true;
+                            if (window.repogifReady === false) return false;
                             return img.complete && img.naturalWidth > 0;
                         }""",
                         timeout=15000,
                     )
+                page.evaluate("() => document.fonts.ready")
                 shot_path = os.path.join(temp_dir, f"frame_{index:03d}.png")
                 page.screenshot(path=shot_path)
                 image = Image.open(shot_path).convert("RGB")
@@ -615,7 +691,7 @@ def generate_repo_gif(repo_name="repogif", stars=123, forks=45, out="repo.gif",
                      width=580, height=140, contributors=None, commits=None,
                      description=None, language=None, topics=None, accent=None,
                      hero=None, hero_focus=None, owner=None, frames=None,
-                     fps=_TEMPLATE10_FPS, scale=None, mp4=None):
+                     fps=_TEMPLATE10_FPS, scale=None, mp4=None, code=None):
     """
     Generate a GitHub repository header GIF using the specified template.
 
@@ -645,6 +721,7 @@ def generate_repo_gif(repo_name="repogif", stars=123, forks=45, out="repo.gif",
         fps (int, optional): Frames per second for multi-frame GIF and MP4 output.
         scale (int, optional): Supersampling factor. Template10 renders at 2x.
         mp4 (str/bool, optional): Also write an H.264 MP4.
+        code (str, optional): Code snippet that template13 types out before showing the hero.
 
     Returns:
         None: The GIF is saved to the specified path
@@ -672,6 +749,7 @@ def generate_repo_gif(repo_name="repogif", stars=123, forks=45, out="repo.gif",
         fps=fps,
         scale=scale,
         mp4=mp4,
+        code=code,
     )
 
 
